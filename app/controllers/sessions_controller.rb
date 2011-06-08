@@ -1,4 +1,6 @@
 class SessionsController < ApplicationController
+  
+  # before_filter :force_ssl, :only => [:new, :create] 
   def new
     @title = "Sign in"
   end
@@ -12,7 +14,7 @@ class SessionsController < ApplicationController
       render 'new'
     else
       sign_in user
-      redirect_to user
+      redirect_back_or user
     end
     
   end
@@ -20,6 +22,16 @@ class SessionsController < ApplicationController
   def destroy
     sign_out
     redirect_to root_path
+  end
+  
+  private
+  
+  def force_ssl
+    
+    if !request.ssl?
+      redirect_to :protocol => 'https'
+    end 
+        
   end
 
 end
