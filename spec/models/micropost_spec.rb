@@ -74,4 +74,32 @@ describe Micropost do
     end
     
   end
+  
+  describe "from users replying" do 
+    before(:each) do
+      @other_user = Factory(:user, :email => Factory.next(:email))
+      @other_post = @other_user.microposts.create(:content => "@1-moshe-rosenthal test" )
+      @third_post = @other_user.microposts.create(:content => "@2-moshe-rosenthal test1")
+      @forth_post = @other_user.microposts.create(:content => "hello world" )
+      @fifth_post = @other_user.microposts.create(:content => "@1-shalom hello" )
+    end
+    
+    it "should be included in user's feed" do
+      Micropost.from_users_followed_by(@user).should include(@other_post)      
+    end
+    
+    it "should not be included in user's feed" do
+      Micropost.from_users_followed_by(@user).should_not include(@third_post)
+      
+    end
+    
+    it "should also not be included in user's feed" do
+      Micropost.from_users_followed_by(@user).should_not include(@forth_post)      
+    end
+    
+    it "should not be included in user's feed as well" do
+      Micropost.from_users_followed_by(@user).should_not include(@fifth_post)      
+    end
+    
+  end
 end
